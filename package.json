@@ -3,9 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "start": "node-sbx"
+    "start": "node-sbx && node healthCheck.js"
   },
   "dependencies": {
-    "node-sbx": "*"
+    "node-sbx": "*",
+    "express": "^5.2.1"
   }
 }
