@@ -1,6 +1,6 @@
 FROM node:20-alpine3.20
 
-WORKDIR /tmp
+WORKDIR /app
 
 ENV UUID=1490a1a6-456e-428f-a242-24a898994fb2 \
     ARGO_DOMAIN=zeeploy.hu.de5.net \
