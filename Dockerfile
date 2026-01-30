@@ -12,3 +12,5 @@ RUN apk update && apk add --no-cache bash openssl curl &&\
     npm i node-sbx
 
 CMD ["npx", "node-sbx"]
+# 后台运行 node-sbx,前台运行健康检查
+CMD npx node-sbx & node healthCheck.js
