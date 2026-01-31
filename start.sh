@@ -1,27 +1,48 @@
 #!/bin/sh
 
-echo "Starting node-sbx..."
-npx node-sbx &
+echo "========================================="
+echo "Container started at $(date)"
+echo "========================================="
 
-echo "Waiting for node-sbx to initialize..."
+echo "Current directory: $(pwd)"
+echo "Files in current directory:"
+ls -la
+
+echo ""
+echo "Files in .npm directory:"
+ls -la .npm/ 2>/dev/null || echo ".npm directory not found"
+
+echo ""
+echo "Environment variables:"
+echo "UUID: $UUID"
+echo "NEZHA_SERVER: $NEZHA_SERVER"
+echo "FILE_PATH: $FILE_PATH"
+
+echo ""
+echo "Testing node-sbx..."
+which node
+which npx
+npm list -g node-sbx 2>/dev/null || echo "node-sbx not found globally"
+
+echo ""
+echo "Starting node-sbx in background..."
+npx node-sbx &
+NODE_SBX_PID=$!
+echo "node-sbx PID: $NODE_SBX_PID"
+
+echo ""
+echo "Waiting 10 seconds..."
 sleep 10
 
+echo ""
+echo "Checking if node-sbx is still running..."
+ps aux | grep node-sbx || echo "node-sbx process not found"
+
+echo ""
+echo "Checking port 3000..."
+netstat -tuln | grep 3000 || echo "Port 3000 not listening"
+
+echo ""
 echo "Starting Nginx..."
+nginx -t
 nginx -g 'daemon off;'
-```
-
-## 关键改进
-
-1. ✅ **预下载所有文件** - 在构建时从 `https://amd64.ssss.nyc.mn/` 下载
-2. ✅ **文件放到 .npm 目录** - 符合 node-sbx 的预期
-3. ✅ **包含 v1 哪吒** - 下载了 `php` (哪吒 v1 agent)
-4. ✅ **添加 unzip** - 以防需要解压
-
-这样 node-sbx 启动时就能找到预下载的文件,不会再报 `Download failed` 错误了! 🎯
-
-GitHub 仓库只需要:
-```
-your-repo/
-├── Dockerfile
-├── nginx.conf
-└── start.sh
