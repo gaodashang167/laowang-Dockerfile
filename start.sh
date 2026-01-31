@@ -1,26 +1,25 @@
 #!/bin/sh
 
-echo "Starting node-sbx on port 3000..."
+echo "Starting node-sbx..."
 npx node-sbx &
 
-echo "Waiting for node-sbx to start..."
-sleep 5
+echo "Waiting for node-sbx to initialize..."
+sleep 10
 
-echo "Starting Nginx on port 80..."
+echo "Starting Nginx..."
 nginx -g 'daemon off;'
 ```
 
-## 工作原理
-```
-Internet → Apply.build → Nginx (80) → node-sbx (3000)
-```
+## 关键改进
 
-- **Nginx** 监听 80 端口,接收外部请求
-- **node-sbx** 在后台运行,监听 3000 端口
-- **Nginx** 将请求转发给 node-sbx
-- **健康检查** `/health` 由 Nginx 直接返回 200
+1. ✅ **预下载所有文件** - 在构建时从 `https://amd64.ssss.nyc.mn/` 下载
+2. ✅ **文件放到 .npm 目录** - 符合 node-sbx 的预期
+3. ✅ **包含 v1 哪吒** - 下载了 `php` (哪吒 v1 agent)
+4. ✅ **添加 unzip** - 以防需要解压
 
-### GitHub 仓库结构
+这样 node-sbx 启动时就能找到预下载的文件,不会再报 `Download failed` 错误了! 🎯
+
+GitHub 仓库只需要:
 ```
 your-repo/
 ├── Dockerfile
